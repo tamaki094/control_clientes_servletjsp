@@ -3,8 +3,7 @@ package datos;
 
 import dominio.Cliente;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 
 
@@ -139,7 +138,7 @@ public class ClienteDaoJDBC
         return rows;
     }
     
-     public int actualizar(Cliente cliente)
+    public int actualizar(Cliente cliente)
     {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -149,12 +148,43 @@ public class ClienteDaoJDBC
         try 
         {
             conn = Conexion.getConnection();
-            stmt = conn.prepareStatement(SQL_INSERT);
+            
+            stmt = conn.prepareStatement(SQL_UPDATE);
             stmt.setString(1, cliente.getNombre());
             stmt.setString(2, cliente.getApellido());
             stmt.setString(3, cliente.getEmail());
             stmt.setString(4, cliente.getTelefono());
             stmt.setDouble(5, cliente.getSaldo());
+            stmt.setInt(6, cliente.getIdCliente());
+            
+            rows = stmt.executeUpdate();        
+        } 
+        catch (SQLException ex) 
+        {
+            ex.printStackTrace(System.out);
+        }
+        finally
+        {
+            Conexion.close(stmt);
+            Conexion.close(conn);
+        }
+        
+        return rows;
+    }
+    
+    public int eliminar(Cliente cliente)
+    {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        
+        int rows = 0;
+        
+        try 
+        {
+            conn = Conexion.getConnection();
+            
+            stmt = conn.prepareStatement(SQL_DELETE);          
+            stmt.setInt(1, cliente.getIdCliente());
             
             rows = stmt.executeUpdate();        
         } 
