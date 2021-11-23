@@ -68,27 +68,46 @@ public class ClienteDaoJDBC
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rs = null;
-       
-        
+
         try 
         {
             conn = Conexion.getConnection();
+            String query = "SELECT id_cliente, nombre, apellido, email, telefono, saldo FROM cliente WHERE id_cliente =" + cliente.getIdCliente();
             stmt = conn.prepareStatement(SQL_SELECT_BY_ID);
             stmt.setInt(1, cliente.getIdCliente());
-            rs = stmt.executeQuery();
-            rs.absolute(1); //nos posicionamos en el primer registro
-           
-            if(cliente.getIdCliente() == rs.getInt("id_cliente"))
+            rs = stmt.executeQuery();  
+            
+            if(rs.next())
             {
-                int idCliente = rs.getInt("id_cliente");
-                String nombre = rs.getString("nombre");
-                String apellido = rs.getString("apellido");
-                String email = rs.getString("email");
-                String telefono = rs.getString("telefono");
-                double saldo = rs.getDouble("saldo");
+                do 
+                {
+                    if(cliente.getIdCliente() == rs.getInt("id_cliente"))
+                    {
+                        System.out.println(rs.getString("nombre"));
+                        int idCliente = rs.getInt("id_cliente");
+                        String nombre = rs.getString("nombre");
+                        String apellido = rs.getString("apellido");
+                        String email = rs.getString("email");
+                        String telefono = rs.getString("telefono");
+                        double saldo = rs.getDouble("saldo");
 
-                cliente = new Cliente(idCliente, nombre, apellido, email, telefono, saldo);
-            }             
+                        cliente = new Cliente(idCliente, nombre, apellido, email, telefono, saldo);
+                    }
+                }
+                while(rs.next());
+            }
+//            rs.absolute(1); //nos posicionamos en el primer registro
+//            if(cliente.getIdCliente() == rs.getInt("id_cliente"))
+//            {
+//                int idCliente = rs.getInt("id_cliente");
+//                String nombre = rs.getString("nombre");
+//                String apellido = rs.getString("apellido");
+//                String email = rs.getString("email");
+//                String telefono = rs.getString("telefono");
+//                double saldo = rs.getDouble("saldo");
+//
+//                cliente = new Cliente(idCliente, nombre, apellido, email, telefono, saldo);
+//            }             
   
             
         } 
